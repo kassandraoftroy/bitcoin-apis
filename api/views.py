@@ -69,8 +69,8 @@ def fund_wallets(request):
 	return JsonResponse(data)
 
 def newmurmur(request):
-	j = json.dumps({})
-	endpoint = os.environ.get('CLIENT_HTTP_ENDPOINT', '')
+	j = json.dumps({"SecretType": "ECDSA"})
+	endpoint = os.environ.get('CLIENT_HTTP_ENDPOINT', 'http://localhost:30000')
 	r = requests.post(endpoint+'/create', data=j)
 	return JsonResponse(json.loads(r.text))
 
@@ -78,7 +78,7 @@ def write(request):
 	key = str(request.POST.get("key", None))
 	fileId = str(request.POST.get("fileId", None))
 	j = json.dumps({"Name":fileId, "Content":key, "Type":"ECDSA-SECP256k1"})
-	endpoint = os.environ.get('CLIENT_HTTP_ENDPOINT', '')
+	endpoint = os.environ.get('CLIENT_HTTP_ENDPOINT', 'http://localhost:30000')
 	r = requests.post(endpoint+'/write', data=j)
 	d = {"status":"fail"}
 	if r.text == "":
@@ -91,7 +91,7 @@ def sign(request):
 	hashes = request.POST.getlist("hashes[]")
 	fileId = str(request.POST.get("fileId", None))
 	output = []
-	endpoint = os.environ.get('CLIENT_HTTP_ENDPOINT', '')
+	endpoint = os.environ.get('CLIENT_HTTP_ENDPOINT', 'http://localhost:30000')
 	for data in hashes:
 		j = json.dumps({"Name":fileId, "PubKey": pubkey, "Data": data})
 		r = requests.post(endpoint+'/sigecdsa', data=j)
